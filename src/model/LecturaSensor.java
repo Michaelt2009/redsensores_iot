@@ -1,20 +1,12 @@
 /* ============================================================
    PLATAFORMA DE MONITOREO AMBIENTAL URBANO
    Clase LecturaSensor - VERSION COMPLETA
-
-   Esta clase SI esta terminada. Es el resultado de lo que
-   discutimos en la Semana 1: en vez de arrastrar cinco
-   variables sueltas por todos los metodos, una lectura viaja
-   completa dentro de un objeto.
-
-   Estudiala antes de usarla. La vas a ver las doce semanas.
    ============================================================ */
 
 package model;
 
 public class LecturaSensor {
 
-    // Rangos fisicos aceptables. Constantes, no numeros magicos.
     public static final double TEMP_MIN = -40.0;
     public static final double TEMP_MAX = 60.0;
     public static final double HUMEDAD_MIN = 0.0;
@@ -42,19 +34,11 @@ public class LecturaSensor {
     public double getHumedad() { return humedad; }
     public double getPm25() { return pm25; }
 
-    /**
-     * Extrae la hora del timestamp con formato "yyyy-MM-dd HH:mm".
-     * @return hora entre 0 y 23
-     */
     public int getHora() {
         String parteHora = timestamp.substring(11, 13);
         return Integer.parseInt(parteHora);
     }
 
-    /**
-     * Verifica que los tres valores esten dentro de rangos fisicamente posibles.
-     * @return true si la lectura es utilizable para calculos
-     */
     public boolean esValida() {
         if (temperatura < TEMP_MIN || temperatura > TEMP_MAX) return false;
         if (humedad < HUMEDAD_MIN || humedad > HUMEDAD_MAX) return false;
@@ -65,6 +49,6 @@ public class LecturaSensor {
     @Override
     public String toString() {
         return idSensor + " | " + timestamp
-             + " | T=" + temperatura + " | H=" + humedad + " | PM=" + pm25;
+                + " | T=" + temperatura + " | H=" + humedad + " | PM=" + pm25;
     }
 }

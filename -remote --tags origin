@@ -1,0 +1,74 @@
+[33mtag hito-S05[m
+Tagger: Michael Tovar <tovarmichael212@gmail.com>
+Date:   Wed Oct 28 19:37:56 2026 -0500
+
+Entrega S05: lista enlazada, historial doble y pruebas unitarias
+
+[33mcommit d3861d801537f973917ee69d005365e9580dc376[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;33mtag: [m[1;33mhito-S05[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Michael Tovar <tovarmichael212@gmail.com>
+Date:   Wed Oct 28 19:37:48 2026 -0500
+
+    S05: documentacion bitacora semana 5 y mediciones de listas
+
+[1mdiff --git a/docs/decisiones.md b/docs/decisiones.md[m
+[1mindex d056de1..a6886b1 100644[m
+[1m--- a/docs/decisiones.md[m
+[1m+++ b/docs/decisiones.md[m
+[36m@@ -66,3 +66,37 @@[m [mMedición de eficiencia[m
+ ```[m
+ [m
+ La Semana 4 podrá extender esta misma arquitectura para estudiar ordenamiento.[m
+[32m+[m
+[32m+[m[32m## Semana 5: La cadena - Estructuras Dinámicas y Listas Enlazadas[m
+[32m+[m
+[32m+[m[32m### Mediciones Registradas en BancoDeListas[m
+[32m+[m
+[32m+[m[32m* **EXP 1 (Polimorfismo e Interfaz):** RepositorioArreglo y RepositorioEnlazado operaron con el mismo ciclo for sin diferencias en su interfaz externa.[m
+[32m+[m[32m* **EXP 2 (Integridad en Eliminación):** Antes de eliminar: 10 elementos. Tras eliminar la posición 5: tamano() reportó 9 y contarRecorriendo() confirmó 9 nodos reales.[m
+[32m+[m[32m* **EXP 3 (Insertar al Inicio - 100.000 lecturas):**[m
+[32m+[m[32m    * Arreglo: 4.999.950.000 movimientos en ~9.193 ms.[m
+[32m+[m[32m    * Lista enlazada: 0 saltos en ~1 ms.[m
+[32m+[m[32m* **EXP 4 (Recorrer por Posición - 50.000 lecturas):**[m
+[32m+[m[32m    * Arreglo: 50.000 accesos en 0 ms.[m
+[32m+[m[32m    * Lista enlazada con obtener(i): 1.249.975.000 saltos acumulados en ~2.899 ms.[m
+[32m+[m[32m* **EXP 5 (Búsqueda Binaria sobre Lista Enlazada - 50.000 lecturas):**[m
+[32m+[m[32m    * Búsqueda lineal: 50.000 saltos.[m
+[32m+[m[32m    * Búsqueda binaria: 749.990 saltos para realizar las mismas 16 comparaciones.[m
+[32m+[m
+[32m+[m[32m### Preguntas para la Bitácora[m
+[32m+[m
+[32m+[m[32m1. **¿Por qué insertar al inicio es más económico en una lista enlazada que en un arreglo?**[m
+[32m+[m[32m   En un arreglo, la posición 0 está anclada al inicio del bloque de memoria contigua. Agregar un dato nuevo allí requiere desplazar los n elementos existentes una posición a la derecha, lo que cuesta O(n) movimientos (en la prueba con 100.000 datos fueron casi 5.000 millones de movimientos). En una lista enlazada, la operación cuesta O(1) tiempo constante: basta con crear el nuevo nodo, hacer que su enlace siguiente apunte a primero y actualizar la referencia primero al nuevo nodo, sin mover ningún elemento previo en memoria.[m
+[32m+[m
+[32m+[m[32m2. **¿Por qué el acceso a una posición arbitraria es más costoso en una lista?**[m
+[32m+[m[32m   El arreglo utiliza memoria contigua y calcula la dirección física directamente en O(1) con la fórmula base + i * tamaño. En cambio, los nodos de una lista enlazada están dispersos en la memoria; para consultar la posición i es indispensable comenzar en primero y avanzar secuencialmente eslabón por eslabón mediante getSiguiente(). Esto vuelve la consulta O(n), lo que en el Experimento 4 causó más de 1.249 millones de saltos de punteros acumulados.[m
+[32m+[m
+[32m+[m[32m3. **¿Qué diferencia existe entre un experimento de rendimiento y una prueba unitaria?**[m
+[32m+[m[32m   Una prueba unitaria (JUnit) evalúa la corrección lógica y el cumplimiento de casos límite (lista vacía, eliminar nodo único o primero/último) mediante aserciones exactas (assertEquals, assertTrue). Un experimento de rendimiento (BancoDeListas) mide el comportamiento asintótico, la escalabilidad y el costo en recursos computacionales (saltos de nodos, desplazamientos de casilleros y tiempo en milisegundos) a medida que aumenta el volumen de datos n.[m
+[32m+[m
+[32m+[m[32m4. **¿Qué caso límite consideras más importante probar en eliminar() y por qué?**[m
+[32m+[m[32m   La eliminación en una posición intermedia puenteando los nodos y la actualización de la referencia ultimo. Si al eliminar un nodo del medio se asigna anterior.setSiguiente(null) en lugar de anterior.setSiguiente(aEliminar.getSiguiente()), se rompe la cadena y se pierden todos los nodos posteriores en memoria sin que salte un error de compilación. Además, si se elimina el último elemento y no se actualiza ultimo, las siguientes llamadas a agregarAlFinal() conectarán nodos a un eslabón que ya no forma parte de la lista válida.[m
+[32m+[m
+[32m+[m[32m5. **Para el histórico de lecturas de sensores, ¿qué estructura elegirías si predominan las inserciones al inicio? ¿Qué elegirías si predominan las consultas por posición? Justifica ambas decisiones.**[m
+[32m+[m[32m* Si predominan inserciones al inicio: Elegiría la lista enlazada (RepositorioEnlazado), ya que cada lectura entrante se registra en O(1) sin el impacto del desplazamiento masivo de memoria que penaliza al arreglo.[m
+[32m+[m[32m* Si predominan consultas por posición: Elegiría el arreglo (RepositorioArreglo), pues garantiza acceso indexado directo en O(1), evitando el costo cuadrático de recorrer la cadena de punteros secuencialmente.[m
+\ No newline at end of file[m
+[1mdiff --git a/src/experiment/BancoDeListas.java b/src/experiment/BancoDeListas.java[m
+[1mindex 08b0f46..59b2e96 100644[m
+[1m--- a/src/experiment/BancoDeListas.java[m
+[1m+++ b/src/experiment/BancoDeListas.java[m
+[36m@@ -18,10 +18,10 @@[m [mpublic class BancoDeListas {[m
+ [m
+     public static void main(String[] args) {[m
+         experimentoUno();[m
+[31m-        // experimentoDos();     // <- FASE 2[m
+[31m-        // experimentoTres();    // <- FASE 3[m
+[31m-        // experimentoCuatro(); // <- FASE 4[m
+[31m-        // experimentoCinco();   // <- FASE 5[m
+[32m+[m[32m        experimentoDos();    // <- FASE 2[m
+[32m+[m[32m        experimentoTres();   // <- FASE 3[m
+[32m+[m[32m        experimentoCuatro(); // <- FASE 4[m
+[32m+[m[32m        experimentoCinco();  // <- FASE 5[m
+     }[m
+ [m
+     // ---------- EXPERIMENTO 1 ----------[m
